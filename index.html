@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#3aa9e8">
+    <title>Юбилей Сергея Егоровича Третьякова</title>
+
+    <!-- Шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Встроенные стили для гарантии отображения -->
+    <style>
+        :root {
+            --sakha-blue: #3aa9e8;
+            --sakha-light: #e6f6ff;
+            --sakha-red: #d92121;
+            --gold: #d4af37;
+            --gold-dark: #b08d2a;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #fcfdff;
+            color: #1e293b;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, .font-display { font-family: 'Playfair Display', serif; }
+
+        /* Премиум фон */
+        .frost-bg {
+            background-image:
+                radial-gradient(circle at 1px 1px, rgba(58,169,232,0.08) 1px, transparent 0),
+                linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+            background-size: 32px 32px, 100% 100%;
+            position: relative;
+        }
+
+        /* Контейнер частиц */
+        #particles-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0; overflow: hidden;
+        }
+
+        .particle {
+            position: absolute; top: -20px; user-select: none; pointer-events: none;
+            will-change: transform; animation-name: fall; animation-timing-function: linear; animation-iteration-count: infinite;
+        }
+
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+
+        /* Искры */
+        .diamond-spark {
+            position: absolute; width: 6px; height: 6px;
+            background: linear-gradient(135deg, #fff 0%, #fff9e6 40%, var(--gold) 100%);
+            transform: rotate(45deg); box-shadow: 0 0 15px rgba(212,175,55,0.6);
+            animation: twinkle 3.5s ease-in-out infinite; opacity: 0;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: rotate(45deg) scale(0.8); }
+            50% { opacity: 1; transform: rotate(45deg) scale(1.3); }
+        }
+
+        /* Орнамент */
+        .yakut-ornament {
+            height: 24px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 24' fill='none'%3E%3Cpath d='M0 12h30M270 12h30' stroke='%23D4AF37' stroke-width='1.5'/%3E%3Cpath d='M30 12c6-6 12-6 18 0s12 6 18 0 12-6 18 0 12 6 18 0' stroke='%23D4AF37' stroke-width='1.2'/%3E%3Cpath d='M150 12c6-6 12-6 18 0s12 6 18 0 12-6 18 0 12 6 18 0' stroke='%23D4AF37' stroke-width='1.2'/%3E%3Cpath d='M48 12c0-5 5-7 10 0 5 7 10 5 10 0M102 12c0-5 5-7 10 0 5 7 10 5 10 0' stroke='%233AA9E8' stroke-width='1'/%3E%3Crect x='145' y='7' width='10' height='10' transform='rotate(45 150 12)' fill='%23fff' stroke='%23D92121' stroke-width='1.2'/%3E%3C/svg%3E");
+            background-repeat: repeat-x; background-position: center; opacity: 0.9;
+        }
+
+        /* Hero Рамка (Стекло) */
+        .hero-frame {
+            position: relative;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow:
+                0 30px 80px -10px rgba(58,169,232,0.25),
+                0 0 0 1px rgba(255,255,255,0.9) inset,
+                0 20px 40px -10px rgba(212,175,55,0.1);
+            border-radius: 2.5rem;
+        }
+
+        /* Градиентная рамка карточек */
+        .yakut-border { position: relative; }
+        .yakut-border::before {
+            content: ''; position: absolute; inset: 0; border-radius: 1.1rem; padding: 2px;
+            background: linear-gradient(135deg, var(--gold), var(--sakha-blue), var(--sakha-red));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            opacity: 0.7; pointer-events: none; z-index: 10;
+        }
+
+        /* Анимации появления */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.visible { opacity: 1; transform: none; }
+
+        .card-hover { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease; }
+        .card-hover:hover { transform: translateY(-8px); box-shadow: 0 20px 40px -10px rgba(58,169,232,0.2); }
+
+        .animate-bounce-slow { animation: bounce 3s infinite; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(8px);} 60% {transform: translateY(4px);} }
+
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        /* Музыка */
+        .animate-spin-slow { animation: spin 8s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .animate-music-bar-1 { animation: musicBar1 1s ease-in-out infinite; }
+        .animate-music-bar-2 { animation: musicBar2 1.2s ease-in-out infinite; }
+        .animate-music-bar-3 { animation: musicBar3 0.8s ease-in-out infinite; }
+        @keyframes musicBar1 { 0%, 100% { height: 30%; } 50% { height: 80%; } }
+        @keyframes musicBar2 { 0%, 100% { height: 50%; } 50% { height: 90%; } }
+        @keyframes musicBar3 { 0%, 100% { height: 30%; } 50% { height: 70%; } }
+
+        /* Утилиты */
+        .text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body class="frost-bg selection:bg-[#3aa9e8] selection:text-white">
+
+    <!-- Фон: Лепестки -->
+    <div id="particles-container"></div>
+
+    <main class="relative z-10">
+        <!-- 1. HERO SECTION -->
+        <section id="hero" class="relative min-h-screen flex items-center justify-center px-5 py-12 overflow-hidden">
+            <!-- Фоновые эффекты -->
+            <div class="absolute inset-0 pointer-events-none">
+                <div class="absolute inset-0 bg-gradient-to-b from-[#E6F6FF]/80 via-[#f0f9ff]/50 to-white"></div>
+                <div class="absolute top-0 left-0 right-0 h-[50vh] opacity-20" style="background: radial-gradient(ellipse at 50% 0%, rgba(58,169,232,0.5) 0%, transparent 70%);"></div>
+                <div id="diamonds" class="absolute inset-0"></div>
+            </div>
+
+            <div class="relative z-10 w-full max-w-3xl mx-auto">
+                <div class="hero-frame p-[1px]">
+                    <div class="relative bg-white/80 backdrop-blur-xl rounded-[2.4rem] px-6 py-12 md:px-16 md:py-20 text-center border border-white/60">
+                        <!-- Угловые элементы -->
+                        <div class="absolute top-6 left-6 w-8 h-8 border-l-2 border-t-2 border-[#d4af37]/50 rounded-tl-xl"></div>
+                        <div class="absolute top-6 right-6 w-8 h-8 border-r-2 border-t-2 border-[#d4af37]/50 rounded-tr-xl"></div>
+                        <div class="absolute bottom-6 left-6 w-8 h-8 border-l-2 border-b-2 border-[#d4af37]/50 rounded-bl-xl"></div>
+                        <div class="absolute bottom-6 right-6 w-8 h-8 border-r-2 border-b-2 border-[#d4af37]/50 rounded-br-xl"></div>
+
+                        <div class="yakut-ornament mb-8"></div>
+
+                        <p class="text-[12px] md:text-sm tracking-[0.35em] uppercase font-bold text-[#3aa9e8] mb-6 animate-fade-in-up">Үбүлүөйгэ ыҥырабыт!</p>
+
+                        <h1 class="text-4xl sm:text-5xl md:text-6xl font-medium leading-tight text-slate-900 mb-2 font-display">
+                            Приглашение<br>на юбилей
+                        </h1>
+
+                        <div class="my-8 flex items-center justify-center gap-4">
+                            <span class="h-px w-16 bg-gradient-to-r from-transparent to-[#d4af37]"></span>
+                            <div class="w-2.5 h-2.5 rotate-45 bg-[#d92121] shadow-lg shadow-red-500/40"></div>
+                            <span class="h-px w-16 bg-gradient-to-l from-transparent to-[#d4af37]"></span>
+                        </div>
+
+                        <div class="text-2xl md:text-3xl font-display italic text-[#b08d2a] leading-snug font-semibold drop-shadow-sm">
+                            Третьякова Сергея Егоровича
+                        </div>
+
+                        <div class="mt-6 inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-white/60 border border-[#3aa9e8]/20 shadow-sm backdrop-blur-md">
+                            <span class="w-2 h-2 rounded-full bg-[#d92121] animate-pulse"></span>
+                            <span class="text-sm font-semibold text-slate-700 tracking-wide">60 лет</span>
+                        </div>
+
+                        <div class="yakut-ornament mt-10"></div>
+                    </div>
+                </div>
+
+                <div class="mt-10 text-center animate-bounce-slow">
+                    <a href="#photo-section" class="inline-flex flex-col items-center gap-2 text-xs font-medium text-slate-400 hover:text-[#3aa9e8] transition-colors">
+                        <span>листайте вниз</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="opacity-70"><path d="M6 9l6 6 6-6"/></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. ФОТО ЮБИЛЯРА -->
+        <section id="photo-section" class="px-5 py-16 md:py-24">
+            <div class="max-w-3xl mx-auto reveal">
+                <div class="relative group perspective-1000">
+                    <!-- Свечение -->
+                    <div class="absolute -inset-4 bg-gradient-to-tr from-[#d4af37]/40 via-[#3aa9e8]/30 to-[#d92121]/40 rounded-[2.5rem] blur-2xl opacity-40 group-hover:opacity-60 transition duration-1000"></div>
+
+                    <div class="relative rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white bg-white transform transition-transform duration-700 group-hover:scale-[1.01]">
+                        <img src="assets/photo.jpg" alt="Третьяков Сергей Егорович"
+                             class="w-full h-auto object-cover transform transition-transform duration-[2s] ease-out group-hover:scale-105"
+                             onerror="this.src='https://placehold.co/800x1000/e6f6ff/3aa9e8?text=Фото+юбиляра';">
+
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80"></div>
+
+                        <div class="absolute bottom-0 left-0 right-0 p-8 text-center text-white">
+                            <p class="font-display text-2xl md:text-3xl italic font-medium drop-shadow-lg translate-y-4 group-hover:translate-y-0 transition-transform duration-500">Сергей Егорович Третьяков</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. ТЕКСТ ПРИГЛАШЕНИЯ -->
+        <section id="invite" class="relative px-5 py-16 md:py-24">
+            <div class="max-w-2xl mx-auto text-center reveal">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white shadow-xl shadow-[#3aa9e8]/15 mb-8 ring-1 ring-[#e6f6ff] animate-float">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 21s-6.5-4.35-9-8c-2.5-3.65 1-8 5-6 2 1 3 2.5 4 4 1-1.5 2-3 4-4 4-2 7.5 2.35 5 6-2.5 3.65-9 8-9 8z" fill="#d92121" opacity=".15" stroke="#d92121" stroke-width="1.5"/></svg>
+                </div>
+                <h2 class="text-3xl md:text-4xl text-slate-900 mb-8 font-display">Дорогие друзья и родные!</h2>
+                <p class="text-lg md:text-xl leading-relaxed text-slate-600 font-light">
+                    Приглашаем вас разделить с нами радость юбилея в теплой атмосфере якутского гостеприимства.
+                    Пусть этот вечер согреет сердца, как добрый огонь очага, а искренние улыбки станут самым драгоценным подарком.
+                </p>
+                <p class="mt-10 text-base text-[#3aa9e8] font-medium tracking-wide uppercase">Күнү-ийы кытта көрсүөххэ! Встретимся в радости!</p>
+            </div>
+        </section>
+
+        <!-- 4. ДЕТАЛИ -->
+        <section id="details" class="px-5 pb-16">
+            <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Дата -->
+                <div class="reveal yakut-border card-hover bg-white rounded-3xl p-[1.5px]">
+                    <div class="bg-white rounded-[1.4rem] p-8 h-full text-center relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-20 h-20 bg-[#e6f6ff] rounded-bl-full opacity-50 -mr-10 -mt-10"></div>
+                        <div class="w-12 h-12 rounded-2xl bg-[#e6f6ff] flex items-center justify-center mx-auto mb-5 ring-1 ring-[#3aa9e8]/20 text-[#3aa9e8]">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                        </div>
+                        <p class="text-[11px] uppercase tracking-widest text-slate-400 font-bold mb-2">Дата</p>
+                        <p class="text-xl font-bold text-slate-800 font-display">17 июля 2026</p>
+                        <p class="text-sm text-slate-500 mt-2 font-medium">пятница</p>
+                    </div>
+                </div>
+                <!-- Время -->
+                <div class="reveal yakut-border card-hover bg-white rounded-3xl p-[1.5px]" style="transition-delay: 100ms">
+                    <div class="bg-white rounded-[1.4rem] p-8 h-full text-center relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-20 h-20 bg-[#fff1f1] rounded-bl-full opacity-50 -mr-10 -mt-10"></div>
+                        <div class="w-12 h-12 rounded-2xl bg-[#fff1f1] flex items-center justify-center mx-auto mb-5 ring-1 ring-[#d92121]/20 text-[#d92121]">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                        </div>
+                        <p class="text-[11px] uppercase tracking-widest text-slate-400 font-bold mb-2">Время</p>
+                        <p class="text-xl font-bold text-slate-800 font-display">18:00</p>
+                        <p class="text-sm text-slate-500 mt-2 font-medium">сбор гостей</p>
+                    </div>
+                </div>
+                <!-- Место -->
+                <div class="reveal yakut-border card-hover bg-white rounded-3xl p-[1.5px]" style="transition-delay: 200ms">
+                    <div class="bg-white rounded-[1.4rem] p-8 h-full text-center relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-20 h-20 bg-[#fff9e6] rounded-bl-full opacity-50 -mr-10 -mt-10"></div>
+                        <div class="w-12 h-12 rounded-2xl bg-[#fff9e6] flex items-center justify-center mx-auto mb-5 ring-1 ring-[#d4af37]/30 text-[#b08d2a]">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="3"/></svg>
+                        </div>
+                        <p class="text-[11px] uppercase tracking-widest text-slate-400 font-bold mb-2">Место</p>
+                        <p class="text-xl font-bold text-slate-800 font-display leading-tight">г. Якутск</p>
+                        <p class="text-sm text-slate-500 mt-2 font-medium">Банкетный зал "Ника"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. ТАЙМЕР -->
+        <section id="countdown-section" class="px-5 py-16 md:py-24 bg-white/50 backdrop-blur-sm rounded-[3rem] my-10 mx-5 shadow-inner shadow-white/50">
+            <div class="max-w-4xl mx-auto reveal text-center">
+                <h3 class="text-2xl md:text-3xl text-slate-800 mb-4 font-display">До праздника осталось</h3>
+                <div class="yakut-ornament w-40 mx-auto mb-10 opacity-60"></div>
+
+                <div id="countdown" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                    <div class="bg-white rounded-2xl p-4 md:p-6 text-center shadow-xl shadow-blue-900/5 ring-1 ring-slate-100 transform transition hover:-translate-y-1">
+                        <div class="text-3xl md:text-5xl font-display text-[#3aa9e8] font-bold" data-days>00</div>
+                        <div class="text-[10px] md:text-xs uppercase tracking-widest text-slate-400 mt-2 font-bold">дней</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-4 md:p-6 text-center shadow-xl shadow-red-900/5 ring-1 ring-slate-100 transform transition hover:-translate-y-1">
+                        <div class="text-3xl md:text-5xl font-display text-[#d92121] font-bold" data-hours>00</div>
+                        <div class="text-[10px] md:text-xs uppercase tracking-widest text-slate-400 mt-2 font-bold">часов</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-4 md:p-6 text-center shadow-xl shadow-yellow-900/5 ring-1 ring-slate-100 transform transition hover:-translate-y-1">
+                        <div class="text-3xl md:text-5xl font-display text-[#b08d2a] font-bold" data-minutes>00</div>
+                        <div class="text-[10px] md:text-xs uppercase tracking-widest text-slate-400 mt-2 font-bold">минут</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-4 md:p-6 text-center shadow-xl shadow-slate-900/5 ring-1 ring-slate-100 transform transition hover:-translate-y-1">
+                        <div class="text-3xl md:text-5xl font-display text-slate-700 font-bold" data-seconds>00</div>
+                        <div class="text-[10px] md:text-xs uppercase tracking-widest text-slate-400 mt-2 font-bold">секунд</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. RSVP -->
+        <section id="rsvp" class="px-5 py-16">
+            <div class="max-w-md mx-auto text-center reveal">
+                <div class="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#1e3a5f] to-[#0f2238] p-[2px] shadow-2xl shadow-blue-900/30">
+                    <div class="relative rounded-[2.4rem] bg-[#0f2238]/80 backdrop-blur-xl px-8 py-12">
+                        <div class="absolute inset-0 opacity-[0.05]" style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"></div>
+
+                        <h3 class="relative text-2xl md:text-3xl text-white mb-3 font-display">Подтвердите участие</h3>
+                        <p class="relative text-blue-100/70 text-sm mb-8 leading-relaxed">Нам важно знать, что вы будете с нами</p>
+
+                        <button id="open-rsvp" class="relative group inline-flex items-center justify-center gap-3 w-full px-8 py-4 bg-white text-slate-900 rounded-full font-bold shadow-lg hover:shadow-xl hover:shadow-white/20 hover:-translate-y-1 transition-all duration-300">
+                            <span class="group-hover:text-[#3aa9e8] transition-colors">Я приду!</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="group-hover:translate-x-1 transition-transform"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. НАВИГАЦИЯ -->
+        <section id="map" class="px-5 pb-24">
+            <div class="max-w-md mx-auto reveal">
+                <div class="bg-white rounded-3xl shadow-2xl shadow-blue-900/10 p-8 text-center ring-1 ring-slate-100 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#d4af37] via-[#3aa9e8] to-[#d92121]"></div>
+
+                    <div class="w-14 h-14 rounded-2xl bg-[#e6f6ff] flex items-center justify-center mx-auto mb-5 text-[#3aa9e8]">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                    </div>
+
+                    <h4 class="text-xl font-bold text-slate-900 font-display">Ресторан «Ника»</h4>
+                    <p class="text-sm text-slate-500 mt-2 mb-8 font-medium">г. Якутск, ул. Пояркова, 16/1</p>
+
+                    <a href="https://2gis.ru/yakutsk/search/yakutsk%20nika/firm/70000001025967227/129.718699%2C62.064558?m=129.718697%2C62.064567%2F18" target="_blank"
+                       class="block w-full py-4 rounded-xl bg-[#3aa9e8] text-white font-bold hover:bg-[#2b8bc4] transition-all shadow-lg shadow-blue-400/30 hover:shadow-blue-400/50 hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                        <span>Открыть в 2ГИС</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="relative px-5 pb-12 bg-gradient-to-t from-white to-transparent">
+        <div class="max-w-md mx-auto text-center">
+            <div class="yakut-ornament opacity-40 mb-6"></div>
+            <p class="text-slate-600 font-medium">С уважением, Сергей</p>
+            <p class="mt-2 text-[11px] text-slate-400 uppercase tracking-widest">Махтал! Спасибо, что вы с нами</p>
+        </div>
+    </footer>
+
+    <!-- МУЗЫКАЛЬНЫЙ ПЛЕЕР -->
+    <div class="fixed bottom-6 right-6 z-[90]">
+        <button id="music-toggle" class="group relative w-14 h-14 bg-white/90 backdrop-blur rounded-full shadow-lg shadow-blue-900/20 ring-1 ring-slate-200 flex items-center justify-center transition-all hover:scale-110 active:scale-95">
+            <svg id="icon-note" class="w-6 h-6 text-[#3aa9e8] transition-opacity duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>
+            </svg>
+            <div id="icon-wave" class="hidden absolute inset-0 flex items-center justify-center gap-1">
+                <span class="w-1 h-3 bg-[#d92121] rounded-full animate-music-bar-1"></span>
+                <span class="w-1 h-5 bg-[#3aa9e8] rounded-full animate-music-bar-2"></span>
+                <span class="w-1 h-3 bg-[#d4af37] rounded-full animate-music-bar-3"></span>
+            </div>
+            <div class="absolute inset-0 rounded-full border-2 border-dashed border-[#d4af37]/30 animate-spin-slow opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        </button>
+        <audio id="bg-music" loop>
+            <source src="assets/music.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <!-- MODAL FORM -->
+    <div id="rsvp-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" data-close></div>
+        <div class="relative z-10 min-h-full flex items-center justify-center p-4">
+            <div class="w-full max-w-sm bg-white rounded-[2rem] shadow-2xl overflow-hidden transform transition-all scale-100 ring-1 ring-white/50">
+                <div class="px-8 pt-8 pb-4 flex items-center justify-between border-b border-slate-50">
+                    <h4 class="text-2xl font-display text-slate-800">Ваш ответ</h4>
+                    <button data-close class="w-9 h-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 transition">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                    </button>
+                </div>
+
+                <form id="rsvp-form" class="px-8 pb-8 pt-6 space-y-5">
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wide">Ваше имя</label>
+                        <input required name="name" type="text" placeholder="Иван Иванов" class="mt-2 w-full px-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#3aa9e8]/30 focus:border-[#3aa9e8] transition">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3 block">Планируете быть?</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="cursor-pointer group">
+                                <input type="radio" name="attend" value="yes" class="peer sr-only" checked>
+                                <div class="px-4 py-3 rounded-xl border border-slate-200 text-center text-sm font-medium peer-checked:border-[#3aa9e8] peer-checked:bg-[#e6f6ff] peer-checked:text-[#0f3a5c] transition-all group-hover:shadow-md">Буду</div>
+                            </label>
+                            <label class="cursor-pointer group">
+                                <input type="radio" name="attend" value="no" class="peer sr-only">
+                                <div class="px-4 py-3 rounded-xl border border-slate-200 text-center text-sm font-medium peer-checked:border-[#d92121] peer-checked:bg-[#fff1f1] peer-checked:text-[#7a0f0f] transition-all group-hover:shadow-md">Не смогу</div>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wide">Гостей (с вами)</label>
+                        <input name="guests" type="number" min="1" max="10" value="1" class="mt-2 w-full px-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#3aa9e8]/30 focus:border-[#3aa9e8] transition">
+                    </div>
+                    <button type="submit" class="w-full py-4 rounded-xl bg-slate-900 text-white font-bold hover:bg-black transition-all shadow-lg shadow-slate-300 hover:shadow-xl hover:-translate-y-0.5">
+                        Отправить ответ
+                    </button>
+                    <p class="text-[10px] text-center text-slate-400">Данные будут отправлены организатору</p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed left-1/2 -translate-x-1/2 bottom-8 z-[200] hidden transition-all duration-500 transform translate-y-10 opacity-0">
+        <div class="px-6 py-4 rounded-2xl bg-slate-900 text-white shadow-2xl flex items-center gap-3 ring-1 ring-white/20">
+            <div class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center text-green-400">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+            <span class="text-sm font-medium">Спасибо! Ваш ответ принят.</span>
+        </div>
+    </div>
+
+    <!-- СКРИПТЫ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. ЛЕПЕСТКИ
+            const createPetals = () => {
+                const container = document.getElementById('particles-container');
+                if (!container) return;
+                const count = window.innerWidth < 768 ? 15 : 25;
+                const colors = ['#d92121', '#b08d2a', '#d4af37', '#ff6b6b'];
+                for (let i = 0; i < count; i++) {
+                    const petal = document.createElement('div');
+                    petal.classList.add('particle');
+                    const size = Math.random() * 8 + 6;
+                    petal.style.width = `${size}px`;
+                    petal.style.height = `${size * 1.4}px`;
+                    petal.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    petal.style.borderRadius = '50% 50% 50% 50% / 60% 60% 40% 40%';
+                    petal.style.opacity = Math.random() * 0.4 + 0.5;
+                    petal.style.left = Math.random() * 100 + 'vw';
+                    const duration = Math.random() * 10 + 15;
+                    const delay = Math.random() * 10;
+                    petal.style.animationDuration = `${duration}s`;
+                    petal.style.animationDelay = `-${delay}s`;
+                    petal.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    container.appendChild(petal);
+                }
+            };
+            createPetals();
+
+            // 2. ИСКРЫ
+            const createDiamonds = () => {
+                const box = document.getElementById('diamonds');
+                if (!box) return;
+                for (let i = 0; i < 15; i++) {
+                    const d = document.createElement('div');
+                    d.className = 'diamond-spark';
+                    d.style.left = Math.random() * 100 + '%';
+                    d.style.top = Math.random() * 60 + '%';
+                    d.style.animationDelay = (Math.random() * 3) + 's';
+                    box.appendChild(d);
+                }
+            };
+            createDiamonds();
+
+            // 3. SCROLL REVEAL
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+            // 4. ТАЙМЕР
+            const targetDate = new Date('2026-07-17T18:00:00').getTime();
+            const updateTimer = () => {
+                const now = new Date().getTime();
+                const diff = targetDate - now;
+                if (diff <= 0) {
+                    document.querySelector('[data-days]').textContent = "00";
+                    document.querySelector('[data-hours]').textContent = "00";
+                    document.querySelector('[data-minutes]').textContent = "00";
+                    document.querySelector('[data-seconds]').textContent = "00";
+                    return;
+                }
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((diff / (1000 * 60)) % 60);
+                const seconds = Math.floor((diff / 1000) % 60);
+                document.querySelector('[data-days]').textContent = String(days).padStart(2,'0');
+                document.querySelector('[data-hours]').textContent = String(hours).padStart(2,'0');
+                document.querySelector('[data-minutes]').textContent = String(minutes).padStart(2,'0');
+                document.querySelector('[data-seconds]').textContent = String(seconds).padStart(2,'0');
+            };
+            setInterval(updateTimer, 1000);
+            updateTimer();
+
+            // 5. МОДАЛКА
+            const modal = document.getElementById('rsvp-modal');
+            const openBtn = document.getElementById('open-rsvp');
+            const closeBtns = modal.querySelectorAll('[data-close]');
+            const form = document.getElementById('rsvp-form');
+            const toast = document.getElementById('toast');
+
+            const openModal = () => { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; };
+            const closeModal = () => { modal.classList.add('hidden'); document.body.style.overflow = ''; };
+
+            if(openBtn) openBtn.addEventListener('click', openModal);
+            closeBtns.forEach(btn => btn.addEventListener('click', closeModal));
+            modal.addEventListener('click', (e) => { if (e.target === modal.querySelector('.absolute.inset-0')) closeModal(); });
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+                const existing = JSON.parse(localStorage.getItem('yubiley_rsvps') || '[]');
+                existing.push({ ...data, timestamp: new Date().toISOString() });
+                localStorage.setItem('yubiley_rsvps', JSON.stringify(existing));
+                console.log('Ответ:', data);
+                closeModal();
+                toast.classList.remove('hidden');
+                setTimeout(() => {
+                    toast.classList.remove('translate-y-10', 'opacity-0');
+                    toast.classList.add('opacity-100');
+                }, 50);
+                setTimeout(() => {
+                    toast.classList.add('translate-y-10', 'opacity-0');
+                    toast.classList.remove('opacity-100');
+                    setTimeout(() => toast.classList.add('hidden'), 500);
+                }, 3500);
+                form.reset();
+            });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
+
+            // 6. МУЗЫКА
+            const musicBtn = document.getElementById('music-toggle');
+            const audio = document.getElementById('bg-music');
+            const iconNote = document.getElementById('icon-note');
+            const iconWave = document.getElementById('icon-wave');
+            let isPlaying = false;
+
+            musicBtn.addEventListener('click', () => {
+                if (isPlaying) {
+                    audio.pause();
+                    iconNote.classList.remove('hidden');
+                    iconWave.classList.add('hidden');
+                    musicBtn.classList.remove('ring-[#d92121]', 'bg-red-50');
+                    musicBtn.classList.add('bg-white/90');
+                } else {
+                    audio.play().catch(e => console.log('Audio play failed:', e));
+                    iconNote.classList.add('hidden');
+                    iconWave.classList.remove('hidden');
+                    musicBtn.classList.remove('bg-white/90');
+                    musicBtn.classList.add('ring-[#d92121]', 'bg-red-50');
+                }
+                isPlaying = !isPlaying;
+            });
+        });
+    </script>
+</body>
+</html>

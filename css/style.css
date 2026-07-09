@@ -1,0 +1,182 @@
+/* --- ПЕРЕМЕННЫЕ И БАЗА --- */
+:root {
+    --sakha-blue: #3aa9e8;
+    --sakha-light: #e6f6ff;
+    --sakha-red: #d92121;
+    --gold: #d4af37;
+    --gold-dark: #b08d2a;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+    background-color: #fcfdff;
+    color: #1e293b;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Playfair Display', serif;
+}
+
+/* --- ФОН И ТЕКСТУРЫ --- */
+.frost-bg {
+    background-image:
+        radial-gradient(circle at 1px 1px, rgba(58,169,232,0.08) 1px, transparent 0),
+        linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+    background-size: 32px 32px, 100% 100%;
+}
+
+#particles-container {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+/* --- ЛЕПЕСТКИ (SARDAANA) --- */
+.particle {
+    position: absolute;
+    top: -20px;
+    user-select: none;
+    pointer-events: none;
+    will-change: transform;
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@keyframes fall {
+    to { transform: translateY(110vh) rotate(360deg); }
+}
+
+/* --- АЛМАЗНАЯ ПЫЛЬ --- */
+.diamond-dust {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, #fff 0%, #fff9e6 30%, var(--gold) 100%);
+    transform: rotate(45deg) translateZ(0);
+    border-radius: 1px;
+    opacity: 0;
+    will-change: transform, opacity;
+    animation: dustFloat 7s linear infinite;
+    box-shadow: 0 0 4px rgba(212,175,55,0.5);
+    z-index: 0;
+}
+
+@keyframes dustFloat {
+    0% { opacity: 0; transform: translateY(0) rotate(45deg) scale(0.6); }
+    10% { opacity: 0.9; }
+    90% { opacity: 0.9; }
+    100% { opacity: 0; transform: translateY(-120px) rotate(225deg) scale(1.1); }
+}
+
+/* --- ЮБИЛЕЙНЫЙ ОРНАМЕНТ (Ваш новый вариант) --- */
+.yakut-ornament {
+    height: 28px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='28' viewBox='0 0 160 28' fill='none'%3E%3Cpath d='M0 14 H160' stroke='%23D4AF37' stroke-opacity='0.3' stroke-width='1'/%3E%3Cg stroke='%23D4AF37' stroke-width='1.4' fill='none'%3E%3Cpath d='M0 14 C20 2 40 26 60 14 S100 2 120 14 S140 26 160 14'/%3E%3Cpath d='M0 14 C20 26 40 2 60 14 S100 26 120 14 S140 2 160 14'/%3E%3C/g%3E%3Cg fill='%23D4AF37'%3E%3Crect x='77' y='11' width='6' height='6' transform='rotate(45 80 14)'/%3E%3Ccircle cx='30' cy='14' r='1.5' fill='%23D92121'/%3E%3Ccircle cx='130' cy='14' r='1.5' fill='%23D92121'/%3E%3C/g%3E%3Cg stroke='%23B08D2A' stroke-width='0.8' opacity='0.6'%3E%3Cpath d='M60 14 l5 -4 l5 4 l-5 4 z' fill='white'/%3E%3Cpath d='M100 14 l5 -4 l5 4 l-5 4 z' fill='white'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-position: center;
+    background-size: 160px 28px;
+    opacity: 1;
+    filter: drop-shadow(0 1px 3px rgba(212,175,55,0.25));
+}
+
+/* --- ГРАДИЕНТНАЯ РАМКА (Исправлено без предупреждений) --- */
+.yakut-border {
+    position: relative;
+    border-radius: 1.25rem;
+    /* Основной фон белый */
+    background: white;
+}
+
+.yakut-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 1.25rem;
+    padding: 1.5px; /* Толщина рамки */
+
+    /* Градиент рамки */
+    background: linear-gradient(135deg, var(--gold), var(--sakha-blue), var(--sakha-red));
+
+    /* Маска для вырезания центра (чтобы осталась только рамка) */
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+
+    /* Стандартные свойства для совместимости */
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+
+    opacity: 0.8;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* --- ЭФФЕКТЫ И АНИМАЦИИ --- */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible {
+    opacity: 1;
+    transform: none;
+}
+
+.card-hover {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+}
+.card-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px -10px rgba(58,169,232,0.2);
+}
+
+.animate-bounce-slow { animation: bounce 3s infinite; }
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(8px);}
+    60% {transform: translateY(4px);}
+}
+
+.animate-float { animation: float 6s ease-in-out infinite; }
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.animate-spin-slow { animation: spin 8s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* Музыкальные бары */
+.animate-music-bar-1 { animation: musicBar1 1s ease-in-out infinite; }
+.animate-music-bar-2 { animation: musicBar2 1.2s ease-in-out infinite; }
+.animate-music-bar-3 { animation: musicBar3 0.8s ease-in-out infinite; }
+
+@keyframes musicBar1 { 0%, 100% { height: 30%; } 50% { height: 80%; } }
+@keyframes musicBar2 { 0%, 100% { height: 50%; } 50% { height: 90%; } }
+@keyframes musicBar3 { 0%, 100% { height: 30%; } 50% { height: 70%; } }
+
+/* --- ДОСТУПНОСТЬ (Reduced Motion) --- */
+@media (prefers-reduced-motion: reduce) {
+    .particle, .diamond-dust, .animate-float, .animate-bounce-slow, .animate-spin-slow {
+        animation: none !important;
+        opacity: 0.4;
+    }
+    .card-hover { transition: none; }
+    .reveal { transition: none; opacity: 1; transform: none; }
+}
+
+/* --- МОБИЛЬНАЯ АДАПТАЦИЯ --- */
+@media (max-width: 640px) {
+    h1 { font-size: 2rem; }
+    .yakut-ornament { height: 24px; background-size: 140px 24px; }
+    .diamond-dust { width: 3px; height: 3px; }
+}
