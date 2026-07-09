@@ -21,7 +21,7 @@ body {
 }
 
 h1, h2, h3, h4 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Playfair Display', 'Times New Roman', serif;
 }
 
 /* --- ФОН И ТЕКСТУРЫ --- */
@@ -110,10 +110,9 @@ h1, h2, h3, h4 {
     /* Маска для вырезания центра (чтобы осталась только рамка) */
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
-
-    /* Стандартные свойства для совместимости */
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask-composite: exclude;
+    mask-mode: alpha;
 
     opacity: 0.8;
     pointer-events: none;
