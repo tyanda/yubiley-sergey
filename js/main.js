@@ -1,34 +1,30 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. АЛМАЗНАЯ ПЫЛЬ (Оптимизировано для мобильных) ---
+    // --- 1. АЛМАЗНАЯ ПЫЛЬ ---
     const createDiamondDust = () => {
         const container = document.getElementById('diamonds');
         if (!container) return;
 
-        // Количество частиц: меньше на телефонах для производительности
         const count = window.innerWidth < 768 ? 12 : 20;
 
         for (let i = 0; i < count; i++) {
             const dust = document.createElement('div');
             dust.classList.add('diamond-dust');
-
-            // Случайная позиция
             dust.style.left = Math.random() * 100 + '%';
             dust.style.top = Math.random() * 100 + '%';
 
-            // Случайная задержка и длительность для естественности
-            const duration = 7 + Math.random() * 5; // от 7 до 12 сек
+            const duration = 7 + Math.random() * 5;
             const delay = Math.random() * 5;
 
             dust.style.animationDuration = `${duration}s`;
-            dust.style.animationDelay = `-${delay}s`; // Отрицательная задержка запускает анимацию сразу
+            dust.style.animationDelay = `-${delay}s`;
 
             container.appendChild(dust);
         }
     };
     createDiamondDust();
 
-    // --- 2. ЛЕПЕСТКИ САРДААНА (Падающие) ---
+    // --- 2. ЛЕПЕСТКИ САРДААНА ---
     const createPetals = () => {
         const container = document.getElementById('particles-container');
         if (!container) return;
@@ -40,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const petal = document.createElement('div');
             petal.classList.add('particle');
 
-            const size = Math.random() * 6 + 5; // Чуть меньше размер для аккуратности
+            const size = Math.random() * 6 + 5;
             petal.style.width = `${size}px`;
             petal.style.height = `${size * 1.5}px`;
             petal.style.background = colors[Math.floor(Math.random() * colors.length)];
@@ -48,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             petal.style.opacity = Math.random() * 0.4 + 0.4;
             petal.style.left = Math.random() * 100 + 'vw';
 
-            const duration = 15 + Math.random() * 10; // Медленное падение
+            const duration = 15 + Math.random() * 10;
             const delay = Math.random() * 10;
 
             petal.style.animationDuration = `${duration}s`;
@@ -60,17 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     createPetals();
 
-    // --- 3. ПОЯВЛЕНИЕ ПРИ СКРОЛЛЕ (Intersection Observer) ---
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px"
-    };
-
+    // --- 3. ПОЯВЛЕНИЕ ПРИ СКРОЛЛЕ ---
+    const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                // Можно прекратить наблюдение после появления для экономии ресурсов
                 observer.unobserve(entry.target);
             }
         });
@@ -78,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // --- 4. ТАЙМЕР ОБРАТНОГО ОТСЧЕТА ---
+    // --- 4. ТАЙМЕР ---
     const targetDate = new Date('2026-07-17T18:00:00').getTime();
 
     const updateTimer = () => {
@@ -90,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const minutesEl = document.querySelector('[data-minutes]');
         const secondsEl = document.querySelector('[data-seconds]');
 
+        // Проверка наличия элементов
         if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
 
         if (diff <= 0) {
@@ -112,9 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     setInterval(updateTimer, 1000);
-    updateTimer(); // Запуск сразу, чтобы не ждать 1 сек
+    updateTimer(); // Запуск сразу
 
-    // --- 5. МОДАЛЬНОЕ ОКНО RSVP ---
+    // --- 5. МОДАЛЬНОЕ ОКНО И ВАЛИДАЦИЯ ---
     const modal = document.getElementById('rsvp-modal');
     const openBtn = document.getElementById('open-rsvp');
     const closeBtns = modal ? modal.querySelectorAll('[data-close]') : [];
@@ -126,7 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.classList.remove('hidden');
             // Небольшая задержка для плавного появления фона
             setTimeout(() => {
-                modal.querySelector('.absolute.inset-0').classList.remove('opacity-0');
+                const overlay = modal.querySelector('.absolute.inset-0');
+                if(overlay) overlay.classList.remove('opacity-0');
             }, 10);
             document.body.style.overflow = 'hidden';
         }
@@ -134,10 +127,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const closeModal = () => {
         if(modal) {
-            modal.querySelector('.absolute.inset-0').classList.add('opacity-0');
+            const overlay = modal.querySelector('.absolute.inset-0');
+            if(overlay) overlay.classList.add('opacity-0');
+
             setTimeout(() => {
                 modal.classList.add('hidden');
-            }, 300); // Ждем окончания анимации
+            }, 300);
+
             document.body.style.overflow = '';
         }
     };
@@ -148,33 +144,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if(modal) {
         modal.addEventListener('click', (e) => {
-            if (e.target === modal.querySelector('.absolute.inset-0')) {
+            const overlay = modal.querySelector('.absolute.inset-0');
+            if (e.target === overlay) {
                 closeModal();
             }
         });
     }
 
-    // Обработка формы
+    // Обработка формы с валидацией
     if(form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
+            // Сброс ошибок
+            form.querySelectorAll('.error-message').forEach(el => el.remove());
+            form.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error', 'border-red-400', 'ring-red-200'));
+
+            let isValid = true;
+            const nameInput = form.querySelector('input[name="name"]');
+            const guestsInput = form.querySelector('input[name="guests"]');
+
+            // Валидация Имени
+            if (!nameInput || !nameInput.value.trim()) {
+                if(nameInput) showError(nameInput, "Пожалуйста, введите ваше имя");
+                isValid = false;
+            } else if (nameInput.value.trim().length < 2) {
+                showError(nameInput, "Имя должно быть не менее 2 символов");
+                isValid = false;
+            }
+
+            // Валидация Гостей
+            if (guestsInput) {
+                const guestsCount = parseInt(guestsInput.value);
+                if (isNaN(guestsCount) || guestsCount < 1) {
+                    showError(guestsInput, "Количество гостей минимум 1");
+                    isValid = false;
+                } else if (guestsCount > 10) {
+                    showError(guestsInput, "Максимум 10 гостей");
+                    isValid = false;
+                }
+            }
+
+            if (!isValid) return;
+
+            // Сбор данных
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
-            // Сохранение локально (эмуляция базы)
-            const existing = JSON.parse(localStorage.getItem('yubiley_rsvps') || '[]');
-            existing.push({ ...data, timestamp: new Date().toISOString() });
-            localStorage.setItem('yubiley_rsvps', JSON.stringify(existing));
-
-            console.log('✅ Ответ гостя сохранен:', data);
+            // Сохранение локально (эмуляция)
+            try {
+                const existing = JSON.parse(localStorage.getItem('yubiley_rsvps') || '[]');
+                existing.push({ ...data, timestamp: new Date().toISOString() });
+                localStorage.setItem('yubiley_rsvps', JSON.stringify(existing));
+                console.log('✅ Данные валидны и сохранены:', data);
+            } catch (e) {
+                console.error('Ошибка сохранения в localStorage:', e);
+            }
 
             closeModal();
 
-            // Показ уведомления
+            // Уведомление
             if(toast) {
                 toast.classList.remove('hidden');
-                // Анимация появления тоста
                 requestAnimationFrame(() => {
                     toast.classList.remove('translate-y-10', 'opacity-0');
                     toast.classList.add('opacity-100');
@@ -186,19 +217,32 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => toast.classList.add('hidden'), 500);
                 }, 3500);
             }
-
             form.reset();
         });
+
+        function showError(inputElement, message) {
+            if(!inputElement) return;
+
+            inputElement.classList.add('input-error', 'border-red-400', 'ring-red-200');
+
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message text-red-500 text-xs mt-1 ml-1 font-medium animate-pulse';
+            errorDiv.textContent = message;
+
+            inputElement.parentElement.appendChild(errorDiv);
+
+            // Плавный скролл к ошибке
+            inputElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
     }
 
-    // Закрытие по Esc
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
             closeModal();
         }
     });
 
-    // --- 6. МУЗЫКАЛЬНЫЙ ПЛЕЕР ---
+    // --- 6. МУЗЫКА ---
     const musicBtn = document.getElementById('music-toggle');
     const audio = document.getElementById('bg-music');
     const iconNote = document.getElementById('icon-note');
@@ -206,11 +250,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (musicBtn && audio) {
         let isPlaying = false;
-
-        // Установка громкости (не слишком громко)
         audio.volume = 0.5;
 
-        musicBtn.addEventListener('click', () => {
+        musicBtn.addEventListener('click', async () => {
             if (isPlaying) {
                 audio.pause();
                 if(iconNote) iconNote.classList.remove('hidden');
@@ -218,20 +260,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 musicBtn.classList.remove('ring-[#d92121]', 'bg-red-50');
                 musicBtn.classList.add('bg-white/90');
             } else {
-                const playPromise = audio.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        console.log("Автовоспроизведение заблокировано браузером или файл не найден.");
-                        alert("Пожалуйста, убедитесь, что файл music.mp3 лежит в папке assets.");
-                    });
+                try {
+                    await audio.play();
+                    if(iconNote) iconNote.classList.add('hidden');
+                    if(iconWave) iconWave.classList.remove('hidden');
+                    musicBtn.classList.remove('bg-white/90');
+                    musicBtn.classList.add('ring-[#d92121]', 'bg-red-50');
+                } catch (error) {
+                    console.warn("Автовоспроизведение заблокировано или файл не найден:", error);
+                    // Можно добавить визуальное уведомление пользователю
                 }
-
-                if(iconNote) iconNote.classList.add('hidden');
-                if(iconWave) iconWave.classList.remove('hidden');
-                musicBtn.classList.remove('bg-white/90');
-                musicBtn.classList.add('ring-[#d92121]', 'bg-red-50');
             }
             isPlaying = !isPlaying;
+        });
+
+        // Обработка конца воспроизведения или ошибок загрузки
+        audio.addEventListener('error', () => {
+            console.error("Ошибка загрузки аудиофайла. Проверьте путь assets/music.mp3");
+            musicBtn.style.display = 'none'; // Скрыть кнопку если аудио нет
         });
     }
 });
