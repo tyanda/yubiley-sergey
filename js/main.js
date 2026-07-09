@@ -191,14 +191,39 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
-            // Сохранение локально (эмуляция)
-            try {
-                const existing = JSON.parse(localStorage.getItem('yubiley_rsvps') || '[]');
-                existing.push({ ...data, timestamp: new Date().toISOString() });
-                localStorage.setItem('yubiley_rsvps', JSON.stringify(existing));
-                console.log('✅ Данные валидны и сохранены:', data);
-            } catch (e) {
-                console.error('Ошибка сохранения в localStorage:', e);
+            // --- ОТПРАВКА В FIREBASE + РЕЗЕРВ В LOCALSTORAGE ---
+
+            // 1. Отправка в Firebase (если инициализирован)
+            if (window.fbDb) {
+                window.fbDb.collection('rsvps').add({
+                    name: data.name,
+                    attend: data.attend,
+                    guests: parseInt(data.guests),
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                })
+                .then(() => {
+                    console.log('✅ Данные успешно отправлены в Firebase');
+                })
+                .catch((error) => {
+                    console.error('❌ Ошибка отправки в Firebase:', error);
+                    // Если ошибка, пробуем сохранить только локально
+                    saveToLocal();
+                });
+            } else {
+                console.warn('⚠️ Firebase не инициализирован, сохраняем только локально');
+                saveToLocal();
+            }
+
+            // Функция для локального сохранения
+            function saveToLocal() {
+                try {
+                    const existing = JSON.parse(localStorage.getItem('yubiley_rsvps') || '[]');
+                    existing.push({ ...data, timestamp: new Date().toISOString() });
+                    localStorage.setItem('yubiley_rsvps', JSON.stringify(existing));
+                    console.log('💾 Данные сохранены в localStorage');
+                } catch (e) {
+                    console.error('Ошибка сохранения в localStorage:', e);
+                }
             }
 
             closeModal();
@@ -248,7 +273,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const iconNote = document.getElementById('icon-note');
     const iconWave = document.getElementById('icon-wave');
 
-    if (musicBtn && audio) {
+    if (musicBtn) {
+        // Проверка наличия аудио элемента
+        const hasAudio = !!document.getElementById('bg-music');
+
+        if (!hasAudio) {
+            musicBtn.style.display = 'none';
+            return;
+        }
+
         let isPlaying = false;
         audio.volume = 0.5;
 
